@@ -8,15 +8,14 @@ import { WeeklyChart } from '@/components/finance/WeeklyChart'
 import { QuickAddFinance } from '@/components/finance/QuickAddFinance'
 import { cn } from '@/lib/utils'
 import {
-  TrendingUp, TrendingDown, Wallet, AlertTriangle, Utensils,
+  TrendingUp, TrendingDown, Wallet, AlertTriangle, 
   IndianRupee, Target, BarChart3, RefreshCw, Loader2, CheckCircle2,
-  PiggyBank, Zap, Trash2, X, Plus
+  Zap, Trash2, Plus
 } from 'lucide-react'
 import { WealthPieChart } from '@/components/finance/WealthPieChart'
 import { AIBrainCard } from '@/components/AIBrainCard'
 import { format } from 'date-fns'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 
 

@@ -114,7 +114,7 @@ export default function StrategyPage() {
               onChange={(e) => setNewLog(e.target.value)}
             />
             <div className="flex justify-between items-center">
-              <p className="text-xs text-muted-foreground italic">"Clear logic leads to clear command."</p>
+              <p className="text-xs text-muted-foreground italic">&quot;Clear logic leads to clear command.&quot;</p>
               <Button 
                 onClick={handleSubmit} 
                 disabled={loading || !newLog.trim()}

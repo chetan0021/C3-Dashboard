@@ -3,6 +3,8 @@ import { generateText } from 'ai';
 import { NextResponse } from 'next/server';
 import { supabase } from '@/utils/supabase';
 
+export const dynamic = 'force-dynamic';
+
 async function generateAIWithFallback(system: string, prompt: string) {
   try {
     // Try Primary Model (70b)
@@ -12,9 +14,10 @@ async function generateAIWithFallback(system: string, prompt: string) {
       prompt,
     });
     return { text: res.text, modelUsed: '70b' };
-  } catch (error: any) {
+  } catch (error: unknown) {
     // If 429 (Rate Limit), fall back to 8b
-    if (error.status === 429 || error.message?.includes('Rate limit')) {
+    const err = error as { status?: number, message?: string }
+    if (err.status === 429 || err.message?.includes('Rate limit')) {
       console.warn("Primary AI hit rate limit. Falling back to 8b-instant...");
       const fallbackRes = await generateText({
         model: groq('llama-3.1-8b-instant'),
@@ -37,35 +40,36 @@ export async function GET(req: Request) {
     const dateString = sevenDaysAgo.toISOString();
 
     // Fetch tasks (including routines) modified or created in last 7 days
-    const { data: tasks, error: tasksError } = await supabase
+    const { data: tasks } = await supabase
       .from('tasks')
       .select('*')
       .or(`created_at.gte.${dateString},updated_at.gte.${dateString}`)
       .order('created_at', { ascending: false });
 
     // Fetch finance in last 7 days
-    const { data: finance, error: financeError } = await supabase
+    const { data: finance } = await supabase
       .from('finance')
       .select('*')
       .gte('date', dateString)
       .order('date', { ascending: false });
 
     // Fetch Social CRM metrics (People with negative balance)
-    const { data: people, error: peopleError } = await supabase
+    const { data: people } = await supabase
       .from('people')
       .select('name, give_take_score, last_interaction')
       .lte('give_take_score', -10)
       .order('give_take_score', { ascending: true });
 
     // Fetch Strategy Logs from last 7 days
-    const { data: logs, error: logsError } = await supabase
+    const { data: logs } = await supabase
       .from('strategy_logs')
       .select('mood, content, created_at')
       .gte('created_at', dateString)
       .order('created_at', { ascending: false });
 
     const outsideFoodEntries = finance?.filter(f => 
-      f.source && f.source.toLowerCase().includes('outside food')
+      (f.source && f.source.toLowerCase().includes('outside food')) ||
+      (f.description && f.description.toLowerCase().includes('outside food'))
     ) || [];
 
     const hasLeakage = outsideFoodEntries.length > 0;
@@ -80,9 +84,9 @@ export async function GET(req: Request) {
 
     const generalPrompt = `You are Chetan’s Strategic Commander. Your job is to analyze his VLSI projects, hackathons, discipline routine, Social CRM, and Strategic Reflections. 
     Output EXACTLY a 3-point 'Battle Plan' for today. Nothing else. Keep it under 150 words. Do NOT use markdown headers, just 3 bullet points starting with "-".
-    If he has spent on "Outside Food" recently, call him out. If he has high social debt, tell him to reach out. If his strategy logs show him struggling, give him tough love.`;
+    If he has spent on "Outside Food" recently (check source/description), call him out. If he has high social debt, tell him to reach out to specific people. Check if tasks are linked to people with negative scores. If his strategy logs show him struggling, give him tough love.`;
 
-    const financePrompt = `You are Chetan’s Financial Intelligence Unit. Analyze the provided Finance Log (specifically the 'source' and 'description' fields).
+    const financePrompt = `You are Chetan’s Financial Intelligence Unit. Analyze the provided Finance Log (specifically the 'source', 'description', and 'amount' fields).
     Group recent spending into 4-5 thematic categories (e.g., "Food & Dining", "Rent & Utilities", "Transport", "Investments", "Health", "Subscriptions").
     
     Output a JSON object with 'insights':
@@ -121,10 +125,11 @@ export async function GET(req: Request) {
       hasLeakage
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Brain API Error:', error);
+    const err = error as Error;
     return NextResponse.json({ 
-      error: error.message,
+      error: err.message,
       insights: [],
       battlePlan: "Neural link unstable. Tactical advice unavailable at this moment.",
       modelUsed: 'none',

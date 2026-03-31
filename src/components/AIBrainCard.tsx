@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { BrainCircuit, AlertTriangle, ShieldCheck, Sparkles, RefreshCw, Zap } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { BarChart, Bar, XAxis, YAxis, Cell, ResponsiveContainer, Tooltip } from 'recharts'
@@ -23,11 +23,9 @@ interface BrainData {
 export function AIBrainCard({ type = 'general' }: { type?: 'general' | 'finance' }) {
   const [data, setData] = useState<BrainData | null>(null)
   const [loading, setLoading] = useState(false)
-  const [isInitial, setIsInitial] = useState(true)
 
-  const fetchBrain = async (force = false) => {
+  const fetchBrain = useCallback(async () => {
     setLoading(true)
-    setIsInitial(false)
     try {
       const res = await fetch(`/api/brain?type=${type}`)
       const json = await res.json()
@@ -39,19 +37,18 @@ export function AIBrainCard({ type = 'general' }: { type?: 'general' | 'finance'
     } finally {
       setLoading(false)
     }
-  }
+  }, [type])
 
   useEffect(() => {
     const cached = sessionStorage.getItem(`ai_cache_${type}`)
     if (cached) {
       setData(JSON.parse(cached))
-      setIsInitial(false)
       setLoading(false)
     } else {
       // Auto-fetch ONLY on first ever session load if no cache
       fetchBrain()
     }
-  }, [type])
+  }, [type, fetchBrain])
 
   return (
     <div className="glass rounded-2xl p-6 border border-primary/20 bg-primary/5 shadow-xl relative overflow-hidden transition-all hover:shadow-2xl hover:scale-[1.01]">
@@ -63,7 +60,7 @@ export function AIBrainCard({ type = 'general' }: { type?: 'general' | 'finance'
           Commander AI
         </h3>
         <button 
-          onClick={() => fetchBrain(true)}
+          onClick={() => fetchBrain()}
           disabled={loading}
           className={cn(
             "flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all",

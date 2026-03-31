@@ -4,7 +4,7 @@ import { People } from '@/types'
 import { cn } from '@/lib/utils'
 import { formatDistanceToNow } from 'date-fns'
 import {
-  Heart, Minus, TrendingUp, TrendingDown, Clock, User,
+  Heart, Minus, TrendingDown, Clock,
   AlertCircle,
 } from 'lucide-react'
 
@@ -17,7 +17,6 @@ interface PersonCardProps {
 function GiveTakeBar({ score }: { score: number }) {
   // score > 0: you give more to them | score < 0: they give more to you
   const clamped = Math.max(-100, Math.min(100, score))
-  const givePercent = clamped >= 0 ? 50 + clamped / 2 : 50 + clamped / 2
   const isGiver = clamped >= 0
 
   return (

@@ -20,7 +20,6 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import {
   Select,
   SelectContent,
@@ -43,16 +42,16 @@ import {
   Minus
 } from 'lucide-react'
 import { supabase } from '@/utils/supabase'
-import { Task, People, TaskCategory } from '@/types'
+import { Task, People } from '@/types'
 
 const taskSchema = z.object({
   title: z.string().min(1, 'Title is required'),
-  description: z.string().default(''),
+  description: z.string().optional(),
   category: z.enum(['Career', 'Growth', 'Discipline', 'Strategy']),
-  priority: z.coerce.number().min(1).max(5).default(1),
-  money_impact: z.enum(['M_up', 'M_down', 'Neutral']).default('Neutral'),
-  is_routine: z.boolean().default(false),
-  status: z.enum(['todo', 'in_progress', 'completed']).default('todo'),
+  priority: z.number().min(1).max(5),
+  money_impact: z.enum(['M_up', 'M_down', 'Neutral']),
+  is_routine: z.boolean().optional(),
+  status: z.enum(['todo', 'in_progress', 'completed']),
   deadline: z.date().optional().nullable(),
   time: z.string().optional(),
   person_id: z.string().optional().nullable(),
@@ -87,16 +86,16 @@ export function QuickAddModal({
     })
   }, [])
 
-  const form = useForm<any>({
+  const form = useForm<TaskFormValues>({
     resolver: zodResolver(taskSchema),
     defaultValues: {
       title: taskToEdit?.title || '',
       description: taskToEdit?.description || '',
-      category: (taskToEdit?.category as any) || 'Career',
+      category: (taskToEdit?.category as TaskFormValues['category']) || 'Career',
       priority: taskToEdit?.priority || 3,
-      money_impact: (taskToEdit?.money_impact as any) || 'Neutral',
+      money_impact: (taskToEdit?.money_impact as TaskFormValues['money_impact']) || 'Neutral',
       is_routine: taskToEdit?.is_routine || false,
-      status: (taskToEdit?.status as any) || 'todo',
+      status: (taskToEdit?.status as TaskFormValues['status']) || 'todo',
       deadline: taskToEdit?.deadline ? new Date(taskToEdit.deadline) : null,
       time: taskToEdit?.deadline ? format(new Date(taskToEdit.deadline), 'HH:mm') : '23:59',
       person_id: taskToEdit?.person_id || null,
@@ -108,11 +107,11 @@ export function QuickAddModal({
       form.reset({
         title: taskToEdit?.title || '',
         description: taskToEdit?.description || '',
-        category: (taskToEdit?.category as any) || 'Career',
+        category: (taskToEdit?.category as TaskFormValues['category']) || 'Career',
         priority: taskToEdit?.priority || 3,
-        money_impact: (taskToEdit?.money_impact as any) || 'Neutral',
+        money_impact: (taskToEdit?.money_impact as TaskFormValues['money_impact']) || 'Neutral',
         is_routine: !!taskToEdit?.is_routine,
-        status: (taskToEdit?.status as any) || 'todo',
+        status: (taskToEdit?.status as TaskFormValues['status']) || 'todo',
         deadline: taskToEdit?.deadline ? new Date(taskToEdit.deadline) : null,
         time: taskToEdit?.deadline ? format(new Date(taskToEdit.deadline), 'HH:mm') : '23:59',
         person_id: taskToEdit?.person_id || null,
@@ -162,9 +161,10 @@ export function QuickAddModal({
       form.reset()
       setOpen(false)
       if (onComplete) onComplete()
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Failed to save task:', err)
-      alert(`Database Error: ${err.message || 'Unknown error'}. Please ensure 'Strategy' is added to the task_category enum in Supabase.`)
+      const error = err as Error
+      alert(`Database Error: ${error.message || 'Unknown error'}. Please ensure 'Strategy' is added to the task_category enum in Supabase.`)
     } finally {
       setLoading(false)
     }
@@ -194,8 +194,8 @@ export function QuickAddModal({
           </div>
         </DialogHeader>
 
-         <Form {...(form as any)}>
-          <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-6 mt-2">
+         <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 mt-2">
             <FormField
               control={form.control}
               name="title"
@@ -290,7 +290,7 @@ export function QuickAddModal({
                   <button
                     key={val}
                     type="button"
-                    onClick={() => form.setValue('money_impact', val as any)}
+                    onClick={() => form.setValue('money_impact', val as TaskFormValues['money_impact'])}
                     className={cn(
                       'flex-1 h-11 rounded-lg border text-xs font-bold transition-all duration-200 flex flex-col items-center justify-center gap-0.5',
                       form.watch('money_impact') === val 

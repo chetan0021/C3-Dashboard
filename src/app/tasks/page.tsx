@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo } from 'react'
 import { supabase } from '@/utils/supabase'
-import { Task, TaskStatus, TaskCategory } from '@/types'
+import { Task, TaskStatus } from '@/types'
 import { sortByHeat, calcHeatScore } from '@/lib/heatEngine'
 import { DailyBattery } from '@/components/tasks/DailyBattery'
 import { TaskCard } from '@/components/tasks/TaskCard'
@@ -21,8 +21,7 @@ import {
   Circle,
   Clock3,
   Filter,
-  Target,
-  Users,
+  Target
 } from 'lucide-react'
 
 // ─── Types ──────────────────────────────────────────────────────────────────

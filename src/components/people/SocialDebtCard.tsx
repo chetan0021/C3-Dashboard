@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/utils/supabase'
 import { People } from '@/types'
-import { Users, AlertCircle, ArrowRight, UserMinus } from 'lucide-react'
+import { Users, ArrowRight, UserMinus } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
 

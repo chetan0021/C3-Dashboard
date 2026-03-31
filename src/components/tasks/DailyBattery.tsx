@@ -1,7 +1,7 @@
 'use client'
 
 import { Task } from '@/types'
-import { Battery, BatteryFull, BatteryMedium, BatteryLow, CheckCircle2, Circle } from 'lucide-react'
+import { BatteryFull, BatteryMedium, BatteryLow, CheckCircle2, Circle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface DailyBatteryProps {

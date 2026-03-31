@@ -11,7 +11,7 @@ import {
   TrendingDown, LayoutGrid, Search, Trash2, Plus
 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 
 type Filter = 'all' | 'needs_action' | 'balanced' | 'givers'
