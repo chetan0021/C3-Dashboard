@@ -27,11 +27,9 @@ export function AIBrainCard({ type = 'general' }: { type?: 'general' | 'finance'
   const fetchBrain = useCallback(async () => {
     setLoading(true)
     try {
-      const res = await fetch(`/api/brain?type=${type}`)
+      const res = await fetch(`/api/brain?type=${type}`, { cache: 'no-store' })
       const json = await res.json()
       setData(json)
-      // Cache in session
-      sessionStorage.setItem(`ai_cache_${type}`, JSON.stringify(json))
     } catch (err) {
       console.error(err)
     } finally {
@@ -40,15 +38,8 @@ export function AIBrainCard({ type = 'general' }: { type?: 'general' | 'finance'
   }, [type])
 
   useEffect(() => {
-    const cached = sessionStorage.getItem(`ai_cache_${type}`)
-    if (cached) {
-      setData(JSON.parse(cached))
-      setLoading(false)
-    } else {
-      // Auto-fetch ONLY on first ever session load if no cache
-      fetchBrain()
-    }
-  }, [type, fetchBrain])
+    fetchBrain()
+  }, [fetchBrain])
 
   return (
     <div className="glass rounded-2xl p-6 border border-primary/20 bg-primary/5 shadow-xl relative overflow-hidden transition-all hover:shadow-2xl hover:scale-[1.01]">
