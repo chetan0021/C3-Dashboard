@@ -78,7 +78,7 @@ export function TaskTimeline() {
         {/* Horizontal dividing line */}
         <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-border/50 -translate-y-1/2 z-0" />
 
-        {tasks.map((task, _index) => {
+        {tasks.map((task) => {
           const deadline = new Date(task.deadline!)
           const daysAway = differenceInDays(deadline, new Date())
           

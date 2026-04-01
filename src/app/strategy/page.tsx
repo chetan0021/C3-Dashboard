@@ -117,7 +117,7 @@ export default function StrategyPage() {
       const res = await fetch('/api/brain?type=general')
       const data = await res.json()
       setAnalysis(data.battlePlan || "No insight generated. Ensure tasks are present.")
-    } catch (_err) {
+    } catch {
       setAnalysis("Neural link disrupted. Could not fetch AI feedback.")
     } finally {
       setAnalyzing(false)
