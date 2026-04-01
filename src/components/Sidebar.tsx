@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   LayoutDashboard,
   CheckSquare,
@@ -20,6 +20,7 @@ import { QuickAddModal } from '@/components/QuickAddModal'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import { Menu } from 'lucide-react'
+import { supabase } from '@/utils/supabase'
 
 const navItems = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard },
@@ -30,6 +31,26 @@ const navItems = [
 ]
 
 function SidebarContent({ collapsed, pathname }: { collapsed?: boolean; pathname: string }) {
+  const [progress, setProgress] = useState(0)
+
+  useEffect(() => {
+    async function fetchProgress() {
+      const weekAgo = new Date()
+      weekAgo.setDate(weekAgo.getDate() - 7)
+      
+      const { data } = await supabase
+        .from('tasks')
+        .select('status')
+        .gte('created_at', weekAgo.toISOString())
+      
+      if (data && data.length > 0) {
+        const completed = data.filter(t => t.status === 'completed').length
+        setProgress(Math.round((completed / data.length) * 100))
+      }
+    }
+    fetchProgress()
+  }, [])
+
   return (
     <div className="flex flex-col h-full">
       {/* Logo */}
@@ -101,9 +122,9 @@ function SidebarContent({ collapsed, pathname }: { collapsed?: boolean; pathname
               <span className="text-xs font-semibold text-primary">Weekly Progress</span>
             </div>
             <div className="w-full bg-white/10 rounded-full h-1.5 mt-2">
-              <div className="bg-primary h-1.5 rounded-full" style={{ width: '62%' }} />
+              <div className="bg-primary h-1.5 rounded-full transition-all duration-1000" style={{ width: `${progress}%` }} />
             </div>
-            <p className="text-[11px] text-muted-foreground mt-1.5">62% tasks completed</p>
+            <p className="text-[11px] text-muted-foreground mt-1.5">{progress}% tasks completed</p>
           </div>
         )}
       </div>

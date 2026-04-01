@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Sidebar } from "@/components/Sidebar";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -26,12 +27,14 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}>
-        <div className="flex h-screen overflow-hidden bg-background">
-          <Sidebar />
-          <main className="flex-1 overflow-y-auto p-6 lg:p-8">
-            {children}
-          </main>
-        </div>
+        <ThemeProvider>
+          <div className="flex h-screen overflow-hidden bg-background">
+            <Sidebar />
+            <main className="flex-1 overflow-y-auto p-6 lg:p-8">
+              {children}
+            </main>
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );
