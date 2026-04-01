@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/utils/supabase'
 import { Task } from '@/types'
 import { format, isToday, isTomorrow, isPast, differenceInDays } from 'date-fns'
-import { Calendar as CalendarIcon, Clock, ArrowRight, ChevronRight, ChevronLeft } from 'lucide-react'
+import { Calendar as CalendarIcon, Clock, ChevronRight, ChevronLeft } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export function TaskTimeline() {
@@ -78,7 +78,7 @@ export function TaskTimeline() {
         {/* Horizontal dividing line */}
         <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-border/50 -translate-y-1/2 z-0" />
 
-        {tasks.map((task, index) => {
+        {tasks.map((task, _index) => {
           const deadline = new Date(task.deadline!)
           const daysAway = differenceInDays(deadline, new Date())
           
