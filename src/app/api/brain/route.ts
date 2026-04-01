@@ -3,7 +3,9 @@ import { generateText } from 'ai';
 import { NextResponse } from 'next/server';
 import { supabase } from '@/utils/supabase';
 
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+export const fetchCache = 'force-no-store'
 
 async function generateAIWithFallback(system: string, prompt: string) {
   try {
@@ -32,6 +34,9 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const type = searchParams.get('type') || 'general';
+
+    const headers = new Headers();
+    headers.set('Cache-Control', 'no-store, max-age=0');
 
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);

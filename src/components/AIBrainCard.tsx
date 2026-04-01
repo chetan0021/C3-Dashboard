@@ -27,7 +27,7 @@ export function AIBrainCard({ type = 'general' }: { type?: 'general' | 'finance'
   const fetchBrain = useCallback(async () => {
     setLoading(true)
     try {
-      const res = await fetch(`/api/brain?type=${type}`, { cache: 'no-store' })
+      const res = await fetch(`/api/brain?type=${type}&t=${Date.now()}`, { cache: 'no-store' })
       const json = await res.json()
       setData(json)
     } catch (err) {
