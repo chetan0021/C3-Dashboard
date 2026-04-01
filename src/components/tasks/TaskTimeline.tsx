@@ -62,7 +62,7 @@ export function TaskTimeline() {
     <div className="glass rounded-2xl p-6 border border-border space-y-4 relative w-full overflow-hidden shrink-0 mt-8">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-bold flex items-center gap-2">
-          <CalendarIcon className="w-5 h-5 text-indigo-400" />
+          <CalendarIcon className="w-5 h-5 text-orange-400" />
           Strategic Task Flow
         </h3>
         <div className="flex items-center gap-2">

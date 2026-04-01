@@ -32,9 +32,9 @@ const quickCategories = [
     label: 'Discipline',
     description: 'Habits & Routines',
     icon: Zap,
-    color: 'text-indigo-400',
-    bg: 'bg-indigo-400/10',
-    border: 'border-indigo-400/20',
+    color: 'text-orange-400',
+    bg: 'bg-orange-400/10',
+    border: 'border-orange-400/20',
   },
   {
     label: 'People',
@@ -48,9 +48,9 @@ const quickCategories = [
     label: 'Strategy',
     description: 'Elite High-Level Logic',
     icon: Zap,
-    color: 'text-cyan-400',
-    bg: 'bg-cyan-400/10',
-    border: 'border-cyan-400/20',
+    color: 'text-amber-400',
+    bg: 'bg-amber-400/10',
+    border: 'border-amber-400/20',
   },
 ]
 
@@ -108,7 +108,7 @@ export default function DashboardPage() {
   const dynamicStats = [
     { label: 'Active Tasks', value: taskCount.toString(), subtext: 'across all categories', icon: CheckSquare, color: 'text-sky-400', bg: 'bg-sky-400/10', border: 'border-sky-400/20' },
     { label: 'Net Wealth', value: `₹${financeTotal.toLocaleString()}`, subtext: 'current balance', icon: DollarSign, color: 'text-emerald-400', bg: 'bg-emerald-400/10', border: 'border-emerald-400/20' },
-    { label: 'Relationships', value: peopleCount.toString(), subtext: 'people tracked', icon: Users, color: 'text-indigo-400', bg: 'bg-indigo-400/10', border: 'border-indigo-400/20' },
+    { label: 'Relationships', value: peopleCount.toString(), subtext: 'people tracked', icon: Users, color: 'text-orange-400', bg: 'bg-orange-400/10', border: 'border-orange-400/20' },
     { label: 'Streak', value: streak.toString(), subtext: 'days active', icon: TrendingUp, color: 'text-amber-400', bg: 'bg-amber-400/10', border: 'border-amber-400/20' },
   ]
 

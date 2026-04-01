@@ -140,7 +140,7 @@ export function AIBrainCard({ type = 'general' }: { type?: 'general' | 'finance'
                           entry.color === 'emerald-400' ? '#10b981' :
                           entry.color === 'amber-400' ? '#f59e0b' :
                           entry.color === 'red-400' ? '#ef4444' :
-                          entry.color === 'cyan-400' ? '#d946ef' :
+                          entry.color === 'amber-400' ? '#d946ef' :
                           '#8b5cf6'
                         }
                       />

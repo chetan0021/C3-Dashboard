@@ -152,14 +152,14 @@ export default function FinancePage() {
         </div>
 
         {/* Strategic Deployment */}
-        <div className="glass rounded-2xl p-5 border border-cyan-400/20 hover:scale-[1.02] transition-transform duration-200">
+        <div className="glass rounded-2xl p-5 border border-amber-400/20 hover:scale-[1.02] transition-transform duration-200">
           <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-cyan-400/15">
-              <Zap className="w-5 h-5 text-cyan-400" />
+            <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-amber-400/15">
+              <Zap className="w-5 h-5 text-amber-400" />
             </div>
-            <TrendingUp className="w-4 h-4 text-cyan-400 opacity-60" />
+            <TrendingUp className="w-4 h-4 text-amber-400 opacity-60" />
           </div>
-          <p className="text-xl font-bold text-cyan-400">{formatINR(stats.passiveStrategy)}</p>
+          <p className="text-xl font-bold text-amber-400">{formatINR(stats.passiveStrategy)}</p>
           <p className="text-xs font-semibold text-foreground/80 mt-0.5">Strategic Deployment</p>
           <p className="text-[11px] text-muted-foreground mt-0.5">Elite Pillar Allocations</p>
         </div>
@@ -179,15 +179,15 @@ export default function FinancePage() {
         {/* Net */}
         <div className={cn(
           'glass rounded-2xl p-5 border hover:scale-[1.02] transition-transform duration-200',
-          stats.net >= 0 ? 'border-indigo-400/20' : 'border-red-400/30'
+          stats.net >= 0 ? 'border-orange-400/20' : 'border-red-400/30'
         )}>
           <div className="flex items-center justify-between mb-3">
-            <div className={cn('flex items-center justify-center w-9 h-9 rounded-xl', stats.net >= 0 ? 'bg-indigo-400/15' : 'bg-red-400/15')}>
-              <Target className={cn('w-5 h-5', stats.net >= 0 ? 'text-indigo-400' : 'text-red-400')} />
+            <div className={cn('flex items-center justify-center w-9 h-9 rounded-xl', stats.net >= 0 ? 'bg-orange-400/15' : 'bg-red-400/15')}>
+              <Target className={cn('w-5 h-5', stats.net >= 0 ? 'text-orange-400' : 'text-red-400')} />
             </div>
-            <Zap className={cn('w-4 h-4 opacity-60', stats.net >= 0 ? 'text-indigo-400' : 'text-red-400')} />
+            <Zap className={cn('w-4 h-4 opacity-60', stats.net >= 0 ? 'text-orange-400' : 'text-red-400')} />
           </div>
-          <p className={cn('text-xl font-bold', stats.net >= 0 ? 'text-indigo-400' : 'text-red-400')}>
+          <p className={cn('text-xl font-bold', stats.net >= 0 ? 'text-orange-400' : 'text-red-400')}>
             {formatINR(stats.net)}
           </p>
           <p className="text-xs font-semibold text-foreground/80 mt-0.5">Net Position</p>
@@ -269,7 +269,7 @@ export default function FinancePage() {
                     <span className={cn(
                       'font-medium px-1.5 py-0.5 rounded-full text-[10px]',
                       r.strategy_tag === 'SIP' ? 'bg-sky-400/10 text-sky-400' :
-                      r.strategy_tag === 'Strategy' ? 'bg-indigo-400/10 text-indigo-400' :
+                      r.strategy_tag === 'Strategy' ? 'bg-orange-400/10 text-orange-400' :
                       'bg-white/5 text-muted-foreground'
                     )}>
                       {r.strategy_tag}
