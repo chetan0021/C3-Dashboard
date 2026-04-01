@@ -7,7 +7,6 @@ export const dynamic = 'force-dynamic';
 
 async function generateAIWithFallback(system: string, prompt: string) {
   try {
-    // Try Primary Model (70b)
     const res = await generateText({
       model: groq('llama-3.3-70b-versatile'),
       system,
@@ -15,10 +14,9 @@ async function generateAIWithFallback(system: string, prompt: string) {
     });
     return { text: res.text, modelUsed: '70b' };
   } catch (error: unknown) {
-    // If 429 (Rate Limit), fall back to 8b
-    const err = error as { status?: number, message?: string }
+    const err = error as { status?: number; message?: string };
     if (err.status === 429 || err.message?.includes('Rate limit')) {
-      console.warn("Primary AI hit rate limit. Falling back to 8b-instant...");
+      console.warn('Primary AI hit rate limit. Falling back to 8b-instant...');
       const fallbackRes = await generateText({
         model: groq('llama-3.1-8b-instant'),
         system,
@@ -39,71 +37,122 @@ export async function GET(req: Request) {
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
     const dateString = sevenDaysAgo.toISOString();
 
-    // Fetch tasks (including routines) modified or created in last 7 days
+    // ── Fetch ALL active (non-completed) tasks ──────────────────────────────
     const { data: tasks } = await supabase
       .from('tasks')
-      .select('*')
-      .or(`created_at.gte.${dateString},updated_at.gte.${dateString}`)
-      .order('created_at', { ascending: false });
+      .select('id, title, description, category, priority, money_impact, status, deadline, is_routine, person_id')
+      .neq('status', 'completed')
+      .order('priority', { ascending: false });
 
-    // Fetch finance in last 7 days
+    // ── Recently completed tasks (last 7 days, for AI context) ──────────────
+    const { data: recentCompleted } = await supabase
+      .from('tasks')
+      .select('title, category, updated_at')
+      .eq('status', 'completed')
+      .gte('updated_at', dateString)
+      .order('updated_at', { ascending: false })
+      .limit(5);
+
+    // ── Finance (last 7 days) ───────────────────────────────────────────────
     const { data: finance } = await supabase
       .from('finance')
       .select('*')
       .gte('date', dateString)
       .order('date', { ascending: false });
 
-    // Fetch Social CRM metrics (People with negative balance)
+    // ── Social CRM: people with negative give-take score ────────────────────
     const { data: people } = await supabase
       .from('people')
       .select('name, give_take_score, last_interaction')
       .lte('give_take_score', -10)
       .order('give_take_score', { ascending: true });
 
-    // Fetch Strategy Logs from last 7 days
+    // ── Strategy logs (last 7 days) ─────────────────────────────────────────
     const { data: logs } = await supabase
       .from('strategy_logs')
       .select('mood, content, created_at')
       .gte('created_at', dateString)
       .order('created_at', { ascending: false });
 
-    const outsideFoodEntries = finance?.filter(f => 
-      (f.source && f.source.toLowerCase().includes('outside food')) ||
-      (f.description && f.description.toLowerCase().includes('outside food'))
-    ) || [];
+    // ── Sort tasks by strategic importance: priority × money weight ──────────
+    const moneyWeight: Record<string, number> = { M_up: 3, M_down: 2, Neutral: 1 };
+    const sortedTasks = (tasks || []).sort((a, b) => {
+      const scoreA = a.priority * (moneyWeight[a.money_impact] ?? 1);
+      const scoreB = b.priority * (moneyWeight[b.money_impact] ?? 1);
+      return scoreB - scoreA;
+    });
 
+    // ── Build clean task summary for AI ────────────────────────────────────
+    const now = new Date();
+    const taskSummary = sortedTasks.map((t) => {
+      if (!t.deadline) {
+        return `[${t.category}] "${t.title}" | Priority: ${t.priority}/5 | Money: ${t.money_impact} | Status: ${t.status} | No deadline`;
+      }
+      const deadlineMs = new Date(t.deadline).getTime() - now.getTime();
+      const daysLeft = (deadlineMs / (1000 * 60 * 60 * 24)).toFixed(1);
+      const urgencyTag = deadlineMs < 0 ? 'OVERDUE' : parseFloat(daysLeft) < 1 ? 'DUE TODAY' : `${daysLeft} days away`;
+      return `[${t.category}] "${t.title}" | Priority: ${t.priority}/5 | Money: ${t.money_impact} | Status: ${t.status} | Deadline: ${urgencyTag}`;
+    }).join('\n');
+
+    // ── Check outside food leakage ──────────────────────────────────────────
+    const outsideFoodEntries = (finance || []).filter(
+      (f) =>
+        (f.source && f.source.toLowerCase().includes('outside food')) ||
+        (f.description && f.description.toLowerCase().includes('outside food'))
+    );
     const hasLeakage = outsideFoodEntries.length > 0;
 
+    // ── Build data context string ───────────────────────────────────────────
     const dataContext = `
-      Current Date: ${new Date().toISOString()}
-      Recent Tasks & Routines: ${JSON.stringify(tasks || [])}
-      Recent Finance Log: ${JSON.stringify(finance || [])}
-      Social Debt (People who gave more to you): ${JSON.stringify(people || [])}
-      Recent Strategic Reflections: ${JSON.stringify(logs || [])}
+Current Date & Time: ${now.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} IST
+
+=== ACTIVE TASKS (ranked by strategic importance = priority × money impact) ===
+${taskSummary || 'No active tasks'}
+
+=== RECENTLY COMPLETED (last 7 days) ===
+${(recentCompleted || []).map((t) => `"${t.title}" [${t.category}]`).join(', ') || 'None'}
+
+=== RECENT FINANCE LOG (last 7 days) ===
+${JSON.stringify(finance || [])}
+
+=== SOCIAL DEBT (people with negative give-take score) ===
+${JSON.stringify(people || [])}
+
+=== RECENT STRATEGY REFLECTIONS ===
+${JSON.stringify(logs || [])}
     `;
 
-    const generalPrompt = `You are Chetan’s Strategic Commander. Your job is to analyze his VLSI projects, hackathons, discipline routine, Social CRM, and Strategic Reflections. 
-    Output EXACTLY a 3-point 'Battle Plan' for today. Nothing else. Keep it under 150 words. Do NOT use markdown headers, just 3 bullet points starting with "-".
-    If he has spent on "Outside Food" recently (check source/description), call him out. If he has high social debt, tell him to reach out to specific people. Check if tasks are linked to people with negative scores. If his strategy logs show him struggling, give him tough love.`;
+    // ── AI Prompts ─────────────────────────────────────────────────────────
+    const generalPrompt = `You are Chetan's Strategic Commander AI. Give him a sharp daily battle plan.
 
-    const financePrompt = `You are Chetan’s Financial Intelligence Unit. Analyze the provided Finance Log (specifically the 'source', 'description', and 'amount' fields).
-    Group recent spending into 4-5 thematic categories (e.g., "Food & Dining", "Rent & Utilities", "Transport", "Investments", "Health", "Subscriptions").
-    
-    Output a JSON object with 'insights':
-    - label: (string) The category name.
-    - value: (number) Total amount or intensity score (0-100).
-    - emoji: (string) An automatic, relevant emoji chosen by you.
-    - color: (string) fuchsia-400 for strategy, emerald-400 for income, red-400 for leakage/spending, amber-400 for general.
+CRITICAL RULES:
+1. Tasks are sorted by STRATEGIC IMPORTANCE (Priority × Money Impact) — focus on the TOP items in that list. Do NOT just pick tasks because they are due soon.
+2. Only mention a deadline-urgent task if it is ALSO high priority (4-5 stars) OR marked OVERDUE.
+3. If any task is OVERDUE, address it in the FIRST bullet point immediately.
+4. If he has spent on "outside food" recently, call him out by name.
+5. If someone has high social debt (negative give-take score), name them and tell Chetan to reach out.
+6. Be SPECIFIC — mention real task names, project names, people names from the data. No generic advice.
 
-    Return ONLY the JSON object. No extra text.`;
+Output EXACTLY 3 bullet points starting with "-". No markdown headers. No asterisks. Max 150 words total. Be direct and commanding.`;
+
+    const financePrompt = `You are Chetan's Financial Intelligence Unit. Analyze the Finance Log fields: source, description, amount.
+Group recent spending into 4-5 thematic categories (e.g. "Food & Dining", "Transport", "Investments", "Subscriptions", "Health").
+
+Output a JSON object with key "insights" as an array where each item has:
+- label: (string) category name
+- value: (number) total amount or intensity 0-100
+- emoji: (string) relevant emoji
+- color: (string) one of: emerald-400, red-400, amber-400, fuchsia-400
+
+Return ONLY the raw JSON object. No extra text, no markdown code blocks.`;
 
     const { text, modelUsed } = await generateAIWithFallback(
       type === 'finance' ? financePrompt : generalPrompt,
       dataContext
     );
 
-    let insights = [];
-    let battlePlan = "";
+    let insights: object[] = [];
+    let battlePlan = '';
 
     if (type === 'finance') {
       try {
@@ -111,29 +160,26 @@ export async function GET(req: Request) {
         const parsed = JSON.parse(cleanJson);
         insights = Array.isArray(parsed) ? parsed : (parsed.insights || []);
       } catch (e) {
-        console.error("AI Finance Parse Error:", e);
-        insights = [{ label: "Status Core", value: 80, emoji: "🚀", color: "emerald-400" }];
+        console.error('AI Finance Parse Error:', e);
+        insights = [{ label: 'Status Core', value: 80, emoji: '🚀', color: 'emerald-400' }];
       }
     } else {
       battlePlan = text;
     }
 
-    return NextResponse.json({
-      insights,
-      battlePlan,
-      modelUsed,
-      hasLeakage
-    });
-
+    return NextResponse.json({ insights, battlePlan, modelUsed, hasLeakage });
   } catch (error: unknown) {
     console.error('Brain API Error:', error);
     const err = error as Error;
-    return NextResponse.json({ 
-      error: err.message,
-      insights: [],
-      battlePlan: "Neural link unstable. Tactical advice unavailable at this moment.",
-      modelUsed: 'none',
-      hasLeakage: false
-    }, { status: 500 });
+    return NextResponse.json(
+      {
+        error: err.message,
+        insights: [],
+        battlePlan: 'Neural link unstable. Tactical advice unavailable at this moment.',
+        modelUsed: 'none',
+        hasLeakage: false,
+      },
+      { status: 500 }
+    );
   }
 }
