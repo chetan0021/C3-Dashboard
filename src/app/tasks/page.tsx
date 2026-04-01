@@ -65,8 +65,8 @@ const TABS: { key: CategoryTab; label: string; icon: React.ElementType; color: s
     key: 'Strategy',
     label: 'Strategy',
     icon: Target,
-    color: 'text-amber-400',
-    activeClass: 'bg-amber-400/15 text-amber-400 border-amber-400/40',
+    color: 'text-rose-400',
+    activeClass: 'bg-rose-400/15 text-rose-400 border-rose-400/40',
   },
 ]
 

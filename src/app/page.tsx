@@ -40,17 +40,17 @@ const quickCategories = [
     label: 'People',
     description: 'Social CRM & Networking',
     icon: Users,
-    color: 'text-amber-400',
-    bg: 'bg-amber-400/10',
-    border: 'border-amber-400/20',
+    color: 'text-rose-500',
+    bg: 'bg-rose-500/10',
+    border: 'border-rose-500/20',
   },
   {
     label: 'Strategy',
     description: 'Elite High-Level Logic',
     icon: Zap,
-    color: 'text-amber-400',
-    bg: 'bg-amber-400/10',
-    border: 'border-amber-400/20',
+    color: 'text-rose-500',
+    bg: 'bg-rose-500/10',
+    border: 'border-rose-500/20',
   },
 ]
 
@@ -109,7 +109,9 @@ export default function DashboardPage() {
     { label: 'Active Tasks', value: taskCount.toString(), subtext: 'across all categories', icon: CheckSquare, color: 'text-sky-400', bg: 'bg-sky-400/10', border: 'border-sky-400/20' },
     { label: 'Net Wealth', value: `₹${financeTotal.toLocaleString()}`, subtext: 'current balance', icon: DollarSign, color: 'text-emerald-400', bg: 'bg-emerald-400/10', border: 'border-emerald-400/20' },
     { label: 'Relationships', value: peopleCount.toString(), subtext: 'people tracked', icon: Users, color: 'text-orange-400', bg: 'bg-orange-400/10', border: 'border-orange-400/20' },
-    { label: 'Streak', value: streak.toString(), subtext: 'days active', icon: TrendingUp, color: 'text-amber-400', bg: 'bg-amber-400/10', border: 'border-amber-400/20' },
+    { label: 'Streak', value: streak.toString(), subtext: 'days active', icon: TrendingUp, color: 'text-rose-500',
+    bg: 'bg-rose-500/10',
+    border: 'border-rose-500/20' },
   ]
 
   return (

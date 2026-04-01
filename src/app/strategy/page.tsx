@@ -130,8 +130,8 @@ export default function StrategyPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center border border-amber-500/30">
-              <Target className="w-5 h-5 text-amber-400" />
+            <div className="w-10 h-10 rounded-xl bg-rose-500/20 flex items-center justify-center border border-rose-500/30">
+              <Target className="w-5 h-5 text-rose-400" />
             </div>
             <h1 className="text-3xl font-bold tracking-tight">Strategy HQ</h1>
           </div>
@@ -140,7 +140,7 @@ export default function StrategyPage() {
         <div className="flex gap-3">
           <Button 
             variant="outline" 
-            className="border-amber-500/30 hover:bg-amber-500/10 text-amber-400 font-semibold"
+            className="border-rose-500/30 hover:bg-rose-500/10 text-rose-400 font-semibold"
             onClick={runAIAnalysis}
             disabled={analyzing}
           >
@@ -175,7 +175,7 @@ export default function StrategyPage() {
               <Button 
                 onClick={handleSubmit} 
                 disabled={loading || !newLog.trim()}
-                className="bg-amber-600 hover:bg-amber-500 font-bold px-8 shadow-[0_0_15px_rgba(6,182,212,0.3)] text-white"
+                className="bg-rose-600 hover:bg-rose-500 font-bold px-8 shadow-md text-white"
               >
                 {loading ? 'Logging...' : 'Log Reflection'}
               </Button>
@@ -195,14 +195,14 @@ export default function StrategyPage() {
                 </div>
               ) : (
                 logs.map((log) => (
-                  <div key={log.id} className="glass rounded-xl p-5 border border-border hover:border-amber-500/30 transition-all group">
+                  <div key={log.id} className="glass rounded-xl p-5 border border-border hover:border-rose-500/30 transition-all group">
                     <div className="flex justify-between items-start mb-2">
                       <div className="flex items-center gap-2 text-xs text-muted-foreground">
                         <Calendar className="w-3.5 h-3.5" />
                         {format(new Date(log.created_at), 'PPPp')}
                       </div>
                       <div className="flex items-center gap-2">
-                        <div className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 uppercase">
+                        <div className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20 uppercase">
                           {log.mood}
                         </div>
                         <button 
@@ -226,12 +226,12 @@ export default function StrategyPage() {
         <div className="space-y-6">
           {/* AI Strategy Analysis Result */}
           {analysis && (
-            <div className="glass rounded-2xl p-6 border border-amber-500/30 bg-amber-500/5 space-y-3 animate-in fade-in slide-in-from-right-4 duration-500">
-              <div className="flex items-center gap-2 text-amber-400 font-bold text-sm uppercase">
+            <div className="glass rounded-2xl p-6 border border-rose-500/30 bg-rose-500/5 space-y-3 animate-in fade-in slide-in-from-right-4 duration-500">
+              <div className="flex items-center gap-2 text-rose-400 font-bold text-sm uppercase">
                 <Brain className="w-4 h-4" />
                 Commander Feedback
               </div>
-              <div className="text-sm leading-relaxed text-foreground/90 bg-black/40 p-4 rounded-xl border border-amber-500/20 whitespace-pre-wrap">
+              <div className="text-sm leading-relaxed text-foreground/90 bg-black/40 p-4 rounded-xl border border-rose-500/20 whitespace-pre-wrap">
                 {analysis}
               </div>
             </div>
@@ -267,7 +267,7 @@ export default function StrategyPage() {
           {/* Course Correction Quick Access */}
           <div className="glass rounded-2xl p-6 border border-border bg-gradient-to-br from-amber-500/5 to-primary/5">
             <h3 className="font-bold text-sm mb-3 flex items-center gap-2">
-              <ArrowUpRight className="w-4 h-4 text-amber-400" />
+              <ArrowUpRight className="w-4 h-4 text-rose-400" />
               Active Direction
             </h3>
             <div className="space-y-3">
@@ -277,7 +277,7 @@ export default function StrategyPage() {
                     <TrendingUp className="w-4 h-4 text-emerald-400" />
                   </div>
                   <div>
-                    <p className="text-xs font-bold uppercase tracking-tight text-amber-400/80">Top Priority Target</p>
+                    <p className="text-xs font-bold uppercase tracking-tight text-rose-400/80">Top Priority Target</p>
                     <p className="text-sm font-semibold text-foreground leading-snug">{activeTarget.title}</p>
                   </div>
                 </div>
