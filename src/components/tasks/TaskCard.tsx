@@ -26,8 +26,8 @@ import { Check, X } from 'lucide-react'
 const CATEGORY_COLORS: Record<string, string> = {
   Career: 'text-sky-400 bg-sky-400/10 border-sky-400/30',
   Growth: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/30',
-  Discipline: 'text-violet-400 bg-violet-400/10 border-violet-400/30',
-  Strategy: 'text-fuchsia-400 bg-fuchsia-400/10 border-fuchsia-400/30',
+  Discipline: 'text-indigo-400 bg-indigo-400/10 border-indigo-400/30',
+  Strategy: 'text-cyan-400 bg-cyan-400/10 border-cyan-400/30',
 }
 
 const STATUS_CYCLE: Record<TaskStatus, TaskStatus> = {
@@ -247,7 +247,7 @@ export function TaskCard({ task, onStatusChange, onEdit, onDelete }: TaskCardPro
 
             {/* Routine badge */}
             {task.is_routine && (
-              <span className="flex items-center gap-1 text-[11px] text-violet-400">
+              <span className="flex items-center gap-1 text-[11px] text-indigo-400">
                 <RefreshCw className="w-3 h-3" />
                 Routine
               </span>

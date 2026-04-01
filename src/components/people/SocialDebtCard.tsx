@@ -48,10 +48,10 @@ export function SocialDebtCard() {
   const hasDebt = debtors.length > 0
 
   return (
-    <div className="glass rounded-2xl p-6 border border-violet-400/20 bg-violet-400/5 relative overflow-hidden group flex flex-col transition-all hover:border-violet-400/40">
+    <div className="glass rounded-2xl p-6 border border-indigo-400/20 bg-indigo-400/5 relative overflow-hidden group flex flex-col transition-all hover:border-indigo-400/40">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-sm font-bold flex items-center gap-2">
-          <Users className="w-4 h-4 text-violet-400" />
+          <Users className="w-4 h-4 text-indigo-400" />
           Social CRM
         </h3>
         <span className={cn(
@@ -104,7 +104,7 @@ export function SocialDebtCard() {
       <div className="mt-6 pt-4 border-t border-white/5">
         <Link 
           href="/people" 
-          className="text-[10px] font-bold text-violet-400 hover:text-violet-300 flex items-center gap-1 transition-colors uppercase tracking-wider"
+          className="text-[10px] font-bold text-indigo-400 hover:text-indigo-300 flex items-center gap-1 transition-colors uppercase tracking-wider"
         >
           Manage Relationships
           <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />

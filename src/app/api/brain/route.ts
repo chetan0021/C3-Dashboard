@@ -142,7 +142,7 @@ Output a JSON object with key "insights" as an array where each item has:
 - label: (string) category name
 - value: (number) total amount or intensity 0-100
 - emoji: (string) relevant emoji
-- color: (string) one of: emerald-400, red-400, amber-400, fuchsia-400
+- color: (string) one of: emerald-400, red-400, amber-400, cyan-400
 
 Return ONLY the raw JSON object. No extra text, no markdown code blocks.`;
 

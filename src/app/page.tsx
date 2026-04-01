@@ -8,6 +8,7 @@ import { QuickAddModal } from '@/components/QuickAddModal'
 import { AIBrainCard } from '@/components/AIBrainCard'
 import { PredictiveMeter } from '@/components/PredictiveMeter'
 import { SocialDebtCard } from '@/components/people/SocialDebtCard'
+import { TaskTimeline } from '@/components/tasks/TaskTimeline'
 import { cn } from '@/lib/utils'
 
 const quickCategories = [
@@ -31,9 +32,9 @@ const quickCategories = [
     label: 'Discipline',
     description: 'Habits & Routines',
     icon: Zap,
-    color: 'text-violet-400',
-    bg: 'bg-violet-400/10',
-    border: 'border-violet-400/20',
+    color: 'text-indigo-400',
+    bg: 'bg-indigo-400/10',
+    border: 'border-indigo-400/20',
   },
   {
     label: 'People',
@@ -47,9 +48,9 @@ const quickCategories = [
     label: 'Strategy',
     description: 'Elite High-Level Logic',
     icon: Zap,
-    color: 'text-fuchsia-400',
-    bg: 'bg-fuchsia-400/10',
-    border: 'border-fuchsia-400/20',
+    color: 'text-cyan-400',
+    bg: 'bg-cyan-400/10',
+    border: 'border-cyan-400/20',
   },
 ]
 
@@ -107,7 +108,7 @@ export default function DashboardPage() {
   const dynamicStats = [
     { label: 'Active Tasks', value: taskCount.toString(), subtext: 'across all categories', icon: CheckSquare, color: 'text-sky-400', bg: 'bg-sky-400/10', border: 'border-sky-400/20' },
     { label: 'Net Wealth', value: `₹${financeTotal.toLocaleString()}`, subtext: 'current balance', icon: DollarSign, color: 'text-emerald-400', bg: 'bg-emerald-400/10', border: 'border-emerald-400/20' },
-    { label: 'Relationships', value: peopleCount.toString(), subtext: 'people tracked', icon: Users, color: 'text-violet-400', bg: 'bg-violet-400/10', border: 'border-violet-400/20' },
+    { label: 'Relationships', value: peopleCount.toString(), subtext: 'people tracked', icon: Users, color: 'text-indigo-400', bg: 'bg-indigo-400/10', border: 'border-indigo-400/20' },
     { label: 'Streak', value: streak.toString(), subtext: 'days active', icon: TrendingUp, color: 'text-amber-400', bg: 'bg-amber-400/10', border: 'border-amber-400/20' },
   ]
 
@@ -151,6 +152,9 @@ export default function DashboardPage() {
           <SocialDebtCard />
         </div>
       </div>
+
+      {/* Task Flow Timeline */}
+      <TaskTimeline />
 
       {/* Categories quick view */}
       <div>

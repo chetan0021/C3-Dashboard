@@ -58,15 +58,15 @@ const TABS: { key: CategoryTab; label: string; icon: React.ElementType; color: s
     key: 'Discipline',
     label: 'Discipline',
     icon: Shield,
-    color: 'text-violet-400',
-    activeClass: 'bg-violet-400/15 text-violet-400 border-violet-400/40',
+    color: 'text-indigo-400',
+    activeClass: 'bg-indigo-400/15 text-indigo-400 border-indigo-400/40',
   },
   {
     key: 'Strategy',
     label: 'Strategy',
     icon: Target,
-    color: 'text-fuchsia-400',
-    activeClass: 'bg-fuchsia-400/15 text-fuchsia-400 border-fuchsia-400/40',
+    color: 'text-cyan-400',
+    activeClass: 'bg-cyan-400/15 text-cyan-400 border-cyan-400/40',
   },
 ]
 
